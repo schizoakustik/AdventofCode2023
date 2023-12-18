@@ -1,7 +1,6 @@
 with hands_with_strengths as
-(select A.hand
-    ,A.type
-    ,B.strength as type_strength
+(select hand
+    ,strength
     ,(select strength from CardStrength
         where card = substr(hand, 1, 1)
     ) as first_card_strength 
@@ -17,15 +16,13 @@ with hands_with_strengths as
     ,(select strength from CardStrength
         where card = substr(hand, 5, 1)
     ) as fifth_card_strength
-    ,A.bet
-from CamelCardHands A
-inner join TypeStrength B
-    on A.type = B.type)
+    ,bet
+from CamelCardHands)
 ,hands_with_ranks as
 (select * 
     ,DENSE_RANK() OVER (
     ORDER BY 
-        type_strength
+        strength
         ,first_card_strength
         ,second_card_strength
         ,third_card_strength
@@ -34,9 +31,13 @@ inner join TypeStrength B
     ) as rank
  from hands_with_strengths)
 
--- SELECT *
+-- SELECT hand
+--     ,rank
+--     ,strength
+--     ,bet
 --     ,bet*rank as win
 -- from hands_with_ranks
+-- where strength = 7
 -- order by rank desc;
 
 SELECT sum(bet*rank) as total_win
