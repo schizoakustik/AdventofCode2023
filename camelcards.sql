@@ -33,6 +33,11 @@ inner join TypeStrength B
         ,fifth_card_strength
     ) as rank
  from hands_with_strengths)
- 
-select sum(bet*rank)
+
+-- SELECT *
+--     ,bet*rank as win
+-- from hands_with_ranks
+-- order by rank desc;
+
+SELECT sum(bet*rank) as total_win
 from hands_with_ranks;
